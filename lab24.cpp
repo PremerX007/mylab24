@@ -1,5 +1,8 @@
 #include<iostream>
 #include<cmath>
+#include<math.h>
+#define PI 3.14159265
+
 using namespace std;
 
 class ComplexNumber{				
@@ -11,7 +14,12 @@ class ComplexNumber{
 		ComplexNumber operator-(const ComplexNumber &);
 		ComplexNumber operator*(const ComplexNumber &);
 		ComplexNumber operator/(const ComplexNumber &);
+		friend ComplexNumber operator+(double, const ComplexNumber &);
+		friend ComplexNumber operator-(double, const ComplexNumber &);
+		friend ComplexNumber operator*(double, const ComplexNumber &);
+		friend ComplexNumber operator/(double, const ComplexNumber &);
 		bool operator==(const ComplexNumber &);
+		friend bool operator==(double, const ComplexNumber &);
 		double abs();
 		double angle();
 };
@@ -28,7 +36,55 @@ ComplexNumber ComplexNumber::operator-(const ComplexNumber &c){
 	return ComplexNumber(real-c.real,imag-c.imag);
 }
 
+ComplexNumber ComplexNumber::operator*(const ComplexNumber &c){
+	return ComplexNumber(((real*c.real)-(imag*c.imag)),((imag*c.real)+(real*c.imag)));
+}
+
+ComplexNumber ComplexNumber::operator/(const ComplexNumber &c){
+	return ComplexNumber((real*c.real+imag*c.imag)/(pow(c.imag,2)+pow(c.real,2)),(c.real*imag-c.imag*real)/(pow(c.imag,2)+pow(c.real,2)));
+}
+
+bool ComplexNumber::operator==(const ComplexNumber &c){
+	if(real == c.real && imag == c.imag) return true;
+	else return false;
+}
+
 //Write your code here
+bool operator==(double a, const ComplexNumber &c){
+	if(a == c.real && a == c.imag) return true;
+	else return false;
+}
+
+double ComplexNumber::abs(){
+	return sqrt(pow(real,2) + pow(imag,2));
+}
+
+double ComplexNumber::angle(){
+	return atan2(imag,real) * 180 / PI;
+}
+
+ComplexNumber operator+(double a, const ComplexNumber&c){
+	return ComplexNumber(a+c.real,c.imag);
+}
+
+ComplexNumber operator-(double a, const ComplexNumber&c){
+	return ComplexNumber(a-c.real,-c.imag);
+}
+
+ComplexNumber operator*(double a, const ComplexNumber&c){
+	return ComplexNumber((a*c.real),(a*c.imag));
+}
+
+ComplexNumber operator/(double a, const ComplexNumber&c){
+	return ComplexNumber((a*c.real)/(pow(c.real,2)+pow(c.imag,2)),(-(a*c.imag))/(pow(c.real,2)+pow(c.imag,2)));
+}
+
+ostream & operator<<(ostream &os, const ComplexNumber &c){
+	if(c.real == 0 && c.imag == 0) return os << "0";
+	else if(c.real == 0) return os << c.imag << "i";
+	else if(c.imag == 0) return os << c.real;
+	else return os << c.real << (c.imag > 0 ?"+" :"") << c.imag << "i";
+}
 
 int main(){
 	ComplexNumber a(1.5,2),b(3.2,-2.5),c(-1,1.2);	
